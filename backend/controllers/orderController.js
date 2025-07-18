@@ -18,30 +18,41 @@ const getOrders = async (req, res) => {
 // POST http://localhost:3000/api/orders
 const createOrder = async (req, res) => {
   try {
-    const { item, paymentStatus } = req.body;
+    const { item, quantity, paymentMethod, paymentStatus } = req.body;
     const userId = req.user && req.user.id;
 
-    if (!userId || !item) {
-      return res.status(400).json({ error: 'Missing user info or item' });
+    if (!userId || !item || !quantity || !paymentMethod) {
+      return res.status(400).json({ error: 'Missing fields in order' });
     }
 
     // Limit to 200 Meals per day
-    if (item === 'Meals') {
-      const mealCount = await Order.countDocuments({ item: 'Meals' });
-      if (mealCount >= 200) {
-        return res.status(400).json({ error: 'Meal limit reached' });
+    if (item === 'meal') {
+      const mealCount = await Order.countDocuments({
+        item: 'meal',
+        createdAt: {
+          $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          $lt: new Date(new Date().setHours(24, 0, 0, 0))
+        }
+      });
+
+      if (mealCount + quantity > 200) {
+        return res.status(400).json({ error: 'Meal limit reached for today' });
       }
     }
 
     const newOrder = new Order({
       user: userId,
       item,
-      paymentStatus
+      quantity,
+      paymentMethod,
+      paymentStatus,
+      orderStatus: 'Pending'
     });
 
     await newOrder.save();
     res.status(201).json(newOrder);
   } catch (err) {
+    console.error('Error creating order:', err);
     res.status(500).json({ error: err.message });
   }
 };
