@@ -1,35 +1,23 @@
-// src/pages/Signup.jsx
-import React from 'react';
-import API from '../api';
+// src/pages/SignUp.jsx
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-const Signup = () => {
-  const [name, setName] = React.useState('');
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [error, setError] = React.useState('');
-  const navigate = useNavigate();
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await API.post('/auth/register', { name, username, password });
-      alert('Registration successful!');
-      navigate('/user'); // redirect to login page
-    } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.error || 'Signup failed');
-    }
-  };
+const SignUp = () => {
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [college, setCollege] = useState('');
+  const [role, setRole] = useState('');
+  const colleges = ['College A', 'College B', 'College C'];
+  const roles = ['Buyer', 'Seller'];
 
   return (
     <div className='flex items-center justify-center min-h-screen'>
       <div className='w-full max-w-md'>
         <h2 className='text-center mb-6 text-4xl font-bold'>Sign Up</h2>
-        {error && <p className='text-red-600 text-center mb-2'>{error}</p>}
-        <form onSubmit={handleSubmit} className='flex flex-col gap-4 items-center'>
+        <form className='flex flex-col gap-4 items-center'>
           <div className='flex justify-between w-full gap-2'>
-            <label className='mb-1 w-[30%]'>Name:</label>
+            <label className='mb-1 w-1/4'>Name:</label>
             <input
               type="text"
               value={name}
@@ -39,7 +27,7 @@ const Signup = () => {
             />
           </div>
           <div className='flex justify-between w-full gap-2'>
-            <label className='mb-1 w-[30%]'>Username:</label>
+            <label className='mb-1 w-1/4'>Username:</label>
             <input
               type="text"
               value={username}
@@ -49,7 +37,36 @@ const Signup = () => {
             />
           </div>
           <div className='flex justify-between w-full gap-2'>
-            <label className='mb-1 w-[30%]'>Password:</label>
+            <label className='mb-1 w-1/4'>College:</label>
+            <select
+              value={college}
+              onChange={e => setCollege(e.target.value)}
+              required
+              className='border border-gray-300 rounded p-2 w-full'
+            >
+              <option value="" disabled>Select your college</option>
+              {colleges.map(col => (
+                <option key={col} value={col}>{col}</option>
+              ))}
+            </select>
+          </div>
+          <div className='flex justify-between w-full gap-2'>
+            <label className='mb-1 w-1/4'>Role:</label>
+            <select
+              value={role}
+              onChange={e => setRole(e.target.value)}
+              required
+              className='border border-gray-300 rounded p-2 w-full'
+            >
+              <option value="" disabled>Select your role</option>
+              {roles.map(role => (
+                <option key={role} value={role}>{role}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className='flex justify-between w-full gap-3'>
+            <label className='mb-1 w-1/4'>Password:</label>
             <input
               type="password"
               value={password}
@@ -67,4 +84,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default SignUp;

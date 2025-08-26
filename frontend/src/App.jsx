@@ -1,23 +1,24 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router';
-import Layout from './layout/Layout';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import BuyerHome from './pages/BuyerHome';
-import AdminHome from './pages/AdminHome';
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router'
+import Layout from './layout/Layout'
+import Profile from './pages/Profile'
+import Login from './pages/Login'
+import SignUp from './pages/SignUp'
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-      <Route element={<Layout />}>
-        <Route path="/user" element={<BuyerHome />} />
-        <Route path="/admin" element={<AdminHome />} />
-      </Route>
-      <Route path="/login" element={<Login />} />
-      <Route path="/sign-up" element={<SignUp />} />
-    </Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<div>Home</div>} />
+          <Route path="/about" element={<div>About</div>} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<SignUp />} />
+      </Routes>
     </Router>
-  );
+  )
 }
 
-export default App;
+export default App

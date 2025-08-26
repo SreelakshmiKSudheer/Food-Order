@@ -1,11 +1,12 @@
 import React from 'react'
+import { CircleUserRound } from 'lucide-react'
 
 const Header = () => {
 return (
     <header className="flex justify-between items-center p-4">
-        <h1 className="m-0 text-2xl font-bold text-amber-600">Foodie</h1>
-        <nav>
-            <a href="/profile" className="mr-4 hover:underline">Profile</a>
+        <h1 className="m-0 text-2xl font-bold text-amber-600">Fast II Order</h1>
+        <nav className="flex gap-5">
+            <a href="/profile" className="mr-4 hover:underline"><CircleUserRound /></a>
             <a href="/about" className="hover:underline">About</a>
         </nav>
     </header>
