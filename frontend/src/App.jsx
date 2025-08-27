@@ -4,13 +4,14 @@ import Layout from './layout/Layout'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
+import PublicHome from './pages/PublicHome'
 
 const App = () => {
   return (
     <Router>
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<div>Home</div>} />
+          <Route path="/" element={<PublicHome />} />
           <Route path="/about" element={<div>About</div>} />
           <Route path="/profile" element={<Profile />} />
         </Route>
