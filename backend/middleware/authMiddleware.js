@@ -17,7 +17,7 @@ exports.verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = {
-      id: decoded.email, // note: must match key used during sign
+      userId: decoded.userId, // note: must match key used during sign
       role: decoded.role,
       college: decoded.college
     };
