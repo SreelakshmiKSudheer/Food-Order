@@ -3,13 +3,8 @@ const buyerRouter = express.Router();
 const { verifyToken } = require('../middleware/authMiddleware');
 const { isBuyer } = require('../middleware/roleMiddleware');
 
-const { getProfile, updateProfile, getAllItems, filterItems, placeOrder, viewOrder, viewAllOrders, cancelOrder, viewOrdersByStatus, viewTodaysOrders } = require('../controllers/buyerController');
+const { getAllItems, filterItems, placeOrder, viewOrder, viewAllOrders, cancelOrder, viewOrdersByStatus, viewTodaysOrders } = require('../controllers/buyerController');
 
-// https://localhost:3000/api/buyer/profile
-buyerRouter.get('/profile', verifyToken, isBuyer, getProfile);
-
-// https://localhost:3000/api/buyer/profile/update
-buyerRouter.put('/profile/update', verifyToken, isBuyer, updateProfile);
 
 // https://localhost:3000/api/buyer/items
 buyerRouter.get('/items', verifyToken, isBuyer, getAllItems);
