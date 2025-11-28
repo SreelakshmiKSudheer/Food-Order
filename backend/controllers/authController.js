@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const College = require("../models/College");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
@@ -130,6 +131,18 @@ exports.login = async (req, res) => {
     } else {
       return res.status(403).json({ message: "Unauthorized role" });
     }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// @desc    Get list of colleges
+// @route   GET /api/auth/colleges
+// @access  Public
+exports.getColleges = async (req, res) => {
+  try {
+    const colleges = await College.find();
+    res.status(200).json(colleges);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
