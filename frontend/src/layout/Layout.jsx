@@ -3,11 +3,11 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { Outlet } from 'react-router'
 
-const Layout = () => {
+const Layout = ({ profile }) => {
     return (
-        <div >
-            <Header /> 
-            <main >
+        <div className="flex flex-col min-h-screen">
+            <Header profile={profile}/> 
+            <main className="flex-grow p-1">
                 <Outlet />
             </main>
             <Footer />
