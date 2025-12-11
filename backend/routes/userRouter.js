@@ -5,7 +5,10 @@ const { getProfile, updateProfile } = require('../controllers/userController');
 // https://localhost:3000/api/user/profile
 userRouter.get('/profile', verifyToken, getProfile);
 
-// https://localhost:3000/api/user/profile/update
+// Support both legacy and current update endpoints
+// https://localhost:3000/api/user/profile (frontend PUT)
+userRouter.put('/profile', verifyToken, updateProfile);
+// https://localhost:3000/api/user/profile/update (legacy)
 userRouter.put('/profile/update', verifyToken, updateProfile);
 
 module.exports = userRouter;
