@@ -38,7 +38,7 @@ const Card = ({ title, description, image, price, category, type, availableQuant
       />
       <h3 className='text-lg font-semibold mb-2'>{title}</h3>
       {/* <p className='text-gray-600'>{description}</p> */}
-      <div className='flex'>
+      <div className='flex gap-2 mb-2'>
         <p className={`font-semibold text-sm px-2 py-0.5 rounded-2xl ${categoryClass}`}>{category}</p>
         <p className={`font-semibold text-sm px-2 py-0.5 rounded-2xl ${typeClass}`}>{type}</p>
       </div>
