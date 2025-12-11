@@ -18,14 +18,17 @@ const Login = () => {
     try {
       const data = await apiLogin(email, password);
       // apiLogin stores token on success
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
       if (data.user) {
         localStorage.setItem('user', JSON.stringify(data.user));
       }
 
       const role = data.user?.role;
       if (role === 'seller') navigate('/seller');
-      else if (role === 'buyer') navigate('/');
-      else navigate('/profile');
+      else if (role === 'buyer') navigate('/buyer');
+      else navigate('/');
     } catch (err) {
       setError(err.message || 'Network error');
     } finally {
@@ -38,8 +41,8 @@ const Login = () => {
       <div className='w-full max-w-md'>
         <h2 className='text-center mb-6 text-4xl font-bold'>Login</h2>
         <form onSubmit={handleSubmit} className='flex flex-col gap-4 items-center'>
-          <div className='flex flex-col w-full gap-2'>
-            <label className='mb-1'>Email:</label>
+          <div className='flex justify-between w-full gap-2'>
+            <label className='mb-1 w-50'>Email:</label>
             <input
               type="email"
               value={email}
@@ -48,8 +51,8 @@ const Login = () => {
               className='border border-gray-300 rounded p-2 w-full'
             />
           </div>
-          <div className='flex flex-col w-full gap-3'>
-            <label className='mb-1'>Password:</label>
+          <div className='flex justify-between w-full gap-3'>
+            <label className='mb-1 w-50'>Password:</label>
             <input
               type="password"
               value={password}
