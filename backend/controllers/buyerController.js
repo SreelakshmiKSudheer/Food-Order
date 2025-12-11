@@ -5,14 +5,22 @@ const FoodAvailability = require("../models/FoodAvailability");
 const Order = require("../models/Order");
 
 
-// get all items
-// api/buyer/items
+// get all items with optional filters (price, category, type)
+// api/buyer/items or api/buyer/items?price=50&category=snacks&type=veg
 exports.getAllItems = async (req, res) => {
     try{
+        const { price, category, type } = req.query;
         const user = await User.findById(req.user.userId);
         const collegeId = user.college;
         const sellerIds = await User.find({ role: 'seller', college: collegeId }).select('_id');
-        const foodItems = await FoodItem.find({ seller: { $in: sellerIds } }).populate('seller', 'name email');
+        
+        // Build filter object
+        const filter = { seller: { $in: sellerIds } };
+        if (price) filter.price = { $lte: Number(price) };
+        if (category) filter.category = category;
+        if (type) filter.type = type;
+        
+        const foodItems = await FoodItem.find(filter).populate('seller', 'name email');
         const foodAvailability = await FoodAvailability.find({ foodId: { $in: foodItems.map(item => item._id) } });
         const foodItemsWithAvailability = foodItems.map(item => {
             const availability = foodAvailability.find(f => f.foodId.toString() === item._id.toString());
@@ -25,31 +33,38 @@ exports.getAllItems = async (req, res) => {
     }
 };
 
-// filter items by price and/or category
-// api/buyer/items?price=50&category=snacks&type=veg
-exports.filterItems = async (req, res) => {
+
+// get item by name (case-insensitive) scoped to buyer's college sellers
+// api/buyer/item/search?name=pizza
+exports.getItemByName = async (req, res) => {
     try {
-        const { price, category, type } = req.query;
+        const { name } = req.query;
+        if (!name || !name.trim()) {
+            return res.status(400).json({ error: 'Item name is required' });
+        }
+
         const user = await User.findById(req.user.userId);
         const collegeId = user.college;
         const sellerIds = await User.find({ role: 'seller', college: collegeId }).select('_id');
-        // Build filter object
-        const filter = { seller: { $in: sellerIds } };
-        if (price) filter.price = { $lte: price };
-        if (category) filter.category = category;
-        if (type) filter.type = type;
-        const foodItems = await FoodItem.find(filter).populate('seller', 'name email');
-        const foodAvailability = await FoodAvailability.find({ foodId: { $in: foodItems.map(item => item._id) } });
-        const foodItemsWithAvailability = foodItems.map(item => {
-            const availability = foodAvailability.find(f => f.foodId.toString() === item._id.toString());
-            return { ...item.toObject(), available: availability ? availability.available : 0 };
-        });
-        res.status(200).json(foodItemsWithAvailability);
+
+        const foodItem = await FoodItem
+            .findOne({ seller: { $in: sellerIds }, name: { $regex: new RegExp(name, 'i') } })
+            .populate('seller', 'name email');
+
+        if (!foodItem) {
+            return res.status(404).json({ error: 'Food item not found' });
+        }
+
+        const availability = await FoodAvailability.findOne({ foodId: foodItem._id });
+        const response = { ...foodItem.toObject(), available: availability ? availability.available : 0 };
+
+        res.status(200).json(response);
     } catch (error) {
-        console.error('Error filtering food items:', error);
+        console.error('Error fetching food item by name:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 // place order
 // api/buyer/order

@@ -3,14 +3,14 @@ const buyerRouter = express.Router();
 const { verifyToken } = require('../middleware/authMiddleware');
 const { isBuyer } = require('../middleware/roleMiddleware');
 
-const { getAllItems, filterItems, placeOrder, viewOrder, viewAllOrders, cancelOrder, viewOrdersByStatus, viewTodaysOrders } = require('../controllers/buyerController');
+const { getAllItems, getItemByName, placeOrder, viewOrder, viewAllOrders, cancelOrder, viewOrdersByStatus, viewTodaysOrders } = require('../controllers/buyerController');
 
 
 // https://localhost:3000/api/buyer/items
 buyerRouter.get('/items', verifyToken, isBuyer, getAllItems);
 
-// https://localhost:3000/api/buyer/items?price=50&category=snacks&type=veg
-buyerRouter.get('/items/filter', verifyToken, isBuyer, filterItems);
+// https://localhost:3000/api/buyer/items/search?name=pizza
+buyerRouter.get('/items/search', verifyToken, isBuyer, getItemByName);
 
 // https://localhost:3000/api/buyer/order
 buyerRouter.post('/order', verifyToken, isBuyer, placeOrder);
